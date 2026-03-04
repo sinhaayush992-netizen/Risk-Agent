@@ -24,7 +24,8 @@ jobs:
  
       # SonarCloud Scan
       - name: SonarCloud Scan
-        run: mvn sonar:sonar \
+        run: |
+         mvn sonar:sonar \
           -Dsonar.projectKey=sinhaayush992-netizen_DevSecOps-Agent \
           -Dsonar.organization=sinhaayush992-netizen \
           -Dsonar.host.url=https://sonarcloud.io \
