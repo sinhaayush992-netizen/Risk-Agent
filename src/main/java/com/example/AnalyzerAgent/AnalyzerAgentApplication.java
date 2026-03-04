@@ -10,4 +10,5 @@ public class AnalyzerAgentApplication {
 		SpringApplication.run(AnalyzerAgentApplication.class, args);
 	}
 
+	
 }
