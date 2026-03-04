@@ -1,0 +1,37 @@
+name: DevSecOps Agent Pipeline
+ 
+on:
+  push:
+    branches:
+      - main
+ 
+jobs:
+  build-and-security-scan:
+    runs-on: ubuntu-latest
+ 
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+ 
+      - name: Set up Java 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+ 
+      - name: Build Project
+        run: mvn clean install
+ 
+      # SonarCloud Scan
+      - name: SonarCloud Scan
+        run: mvn sonar:sonar \
+          -Dsonar.projectKey=sinhaayush992-netizen_DevSecOps-Agent \
+          -Dsonar.organization=sinhaayush992-netizen \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+ 
+      # Snyk Scan
+      - name: Snyk Security Scan
+        uses: snyk/actions/maven@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
