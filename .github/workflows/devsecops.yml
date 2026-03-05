@@ -43,6 +43,6 @@ jobs:
       - name: Authenticate Snyk
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
       - name: Snyk Security Scan
-        run: snyk test --file=DevSecOps-Agent/pom.xml --debug --log-level=trace
+        run: snyk test --file=DevSecOps-Agent/pom.xml -d
       #  env:
        #   SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
