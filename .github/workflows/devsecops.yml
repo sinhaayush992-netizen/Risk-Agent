@@ -34,7 +34,10 @@ jobs:
       # Snyk Scan
       - name: Install snyk
         run: npm install -g snyk
+
+      - name: Authenticate Snyk
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
       - name: Snyk Security Scan
         run: snyk test --file=pom.xml
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      #  env:
+       #   SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
