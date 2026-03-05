@@ -30,6 +30,8 @@ jobs:
           -Dsonar.organization=sinhaayush992-netizen \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
+      
  
       # Snyk Scan
       - name: Install snyk
@@ -38,6 +40,6 @@ jobs:
       - name: Authenticate Snyk
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
       - name: Snyk Security Scan
-        run: snyk test --file=pom.xml
+        run: snyk test --file=DevSecOps-Agent/pom.xml
       #  env:
        #   SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
