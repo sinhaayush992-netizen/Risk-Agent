@@ -15,6 +15,9 @@ jobs:
 
       - name: Checkout DevSecOps Project
         run:  actions/checkout@v4 
+        with:
+          repository: sinhaayush992-netizen/DevSecOps-Agent
+          path: DevSecOps-Agent
       - name: Verify Repo
         run: ls -R
 
