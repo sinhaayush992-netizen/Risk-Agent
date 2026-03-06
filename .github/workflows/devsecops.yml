@@ -37,7 +37,8 @@ jobs:
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
-      
+      - name: Make Maven wrapper executable
+        run: chmod +x DevSecOps-Agent/mvnw
  
       # Snyk Scan
       - name: Install snyk
@@ -46,6 +47,6 @@ jobs:
       - name: Authenticate Snyk
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
       - name: Snyk Security Scan
-        run: snyk test --file=DevSecOps-Agent/pom.xml
+        run: snyk test --file=DevSecOps-Agent/pom.xml -d
       #  env:
        #   SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
