@@ -16,6 +16,9 @@ jobs:
       - name: Clone DevSecOps Project
         run: git clone https://github.com/sinhaayush992-netizen/DevSecOps-Agent.git
  
+      - name: Verify Repo
+        run: ls -R
+
       - name: Set up Java 17
         uses: actions/setup-java@v3
         with:
@@ -28,7 +31,7 @@ jobs:
       # SonarCloud Scan
       - name: SonarCloud Scan
         run: |
-         mvn sonar:sonar \
+          mvn -f DevSecOps-Agent/pom.xml sonar:sonar  \
           -Dsonar.projectKey=sinhaayush992-netizen_DevSecOps-Agent \
           -Dsonar.organization=sinhaayush992-netizen \
           -Dsonar.host.url=https://sonarcloud.io \
@@ -43,6 +46,6 @@ jobs:
       - name: Authenticate Snyk
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
       - name: Snyk Security Scan
-        run: snyk test --file=sinhaayush992-netizen/DevSecOps-Agent/pom.xml
+        run: snyk test --file=DevSecOps-Agent/pom.xml
       #  env:
        #   SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
