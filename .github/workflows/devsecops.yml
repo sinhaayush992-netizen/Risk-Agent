@@ -51,5 +51,12 @@ jobs:
       - name: Snyk Security Scan
         run: snyk test --file=DevSecOps-Agent/pom.xml
         continue-on-error: true
-      #  env:
-       #   SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - name: Generate snyk report 
+        run: snyk test --file=DevSecOps-Agent/pom.xml --json > snyk-report.json
+        continue-on-error: true
+
+      - name: upload report
+        uses: actions/upload-artifact@v3
+        with:
+         name: snyk-report
+         path: snyk-report.json
