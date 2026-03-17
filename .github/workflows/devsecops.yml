@@ -58,7 +58,7 @@ jobs:
       continue-on-error: true
  
     - name: Generate Snyk Report
-      run: snyk test --file=DevSecOps-Agent/pom.xml --json > snyk-report.json
+      run: snyk test --file=DevSecOps-Agent/pom.xml --json > snyk-report.json || true
       continue-on-error: true
  
     #Upload Report
