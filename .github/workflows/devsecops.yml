@@ -45,6 +45,10 @@ jobs:
         -Dsonar.organization=sinhaayush992-netizen \
         -Dsonar.host.url=https://sonarcloud.io \
         -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
+    - name: Make Maven wrapper executable
+      run: chmod +x DevSecOps-Agent/mvnw
+
  
     #SNYK SCAN
     - name: Install Snyk
