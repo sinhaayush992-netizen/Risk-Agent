@@ -79,9 +79,16 @@ public class AIRiskAnalyzer {
                         System.out.println("AI response received");
         }
         catch(Exception ex){
-            System.out.println("ERROR FROM AI");
-            ex.printStackTrace();
+           System.out.println("ERROR FROM AI");
+
+            if (ex.getMessage() != null && ex.getMessage().contains("429")) {
+              System.out.println("Rate limit hit. Retrying after 2 seconds...");
+                Thread.sleep(2000);
+                return analyze(tool, title, severity, component); 
+                }
+                 ex.printStackTrace();
         }
+        Thread.sleep(1000);
         if (response == null || response.isEmpty()) {
         System.out.println("AI response is null or empty");
         return null;
