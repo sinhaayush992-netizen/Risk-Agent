@@ -53,6 +53,7 @@ public class AIRiskAnalyzer {
         int waitTimeSeconds = 2; // initial wait time for backoff
         int ATTEMPT=0;
         String response = null;
+        int count=0;
 
         while (retryCount < maxRetries) {
             try {
@@ -66,12 +67,17 @@ public class AIRiskAnalyzer {
                         .returnContent()
                         .asString();
 
+                        count++;
+                        if(count>3)
+                        return null;
+
                 System.out.println("AI response received");
                 break; // success
             } catch (org.apache.hc.client5.http.HttpResponseException ex) {
                 if (ex.getStatusCode() == 429) {
                     // Rate limit hit, retry with exponential backoff
                     retryCount++;
+                    ATTEMPT++;
                     System.out.println("Rate limit hit. Retrying in " + waitTimeSeconds + " seconds...");
                     Thread.sleep(2000*ATTEMPT);
                     waitTimeSeconds *= 2; // exponential backoff
