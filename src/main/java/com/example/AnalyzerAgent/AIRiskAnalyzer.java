@@ -44,8 +44,11 @@ public class AIRiskAnalyzer {
         String body = mapper.writeValueAsString(requestBody);
  
         System.out.println("Calling AI...");
- 
-        String response =
+        System.out.println("API KEY PRESENT"+(API_KEY!=null));
+         System.out.println("API KEY length"+(API_KEY!=null? API_KEY.length():0));
+         String response=null;
+        try{
+             response =
                 Request.post("https://api.openai.com/v1/chat/completions")
                         .addHeader("Authorization","Bearer "+API_KEY)
                         .addHeader("Content-Type","application/json")
@@ -53,8 +56,14 @@ public class AIRiskAnalyzer {
                         .execute()
                         .returnContent()
                         .asString();
- 
-        System.out.println("AI response received");
+
+                        System.out.println("AI response received");
+        }
+        catch(Exception ex){
+            System.out.println("ERROR FROM AI");
+            ex.printStackTrace();
+        }
+        
  
         JsonNode root = mapper.readTree(response);
  
