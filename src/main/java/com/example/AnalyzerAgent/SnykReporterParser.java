@@ -35,7 +35,7 @@ public class SnykReporterParser {
  
                 RiskAnalysis risk =
                 AIRiskAnalyzer.analyze("SNYK",title,severity,pkg);
-                Thread.sleep(3000);
+                Thread.sleep(10000);
  
                 String summary="[SNYK] "+title;
  
