@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
  
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
  
 public class SnykReporterParser {
  
@@ -19,6 +22,8 @@ public class SnykReporterParser {
             JsonNode root = mapper.readTree(new File("snyk-report.json"));
  
             JsonNode vulns=root.get("vulnerabilities");
+
+            System.out.println(new String(Files.readAllBytes(Paths.get("snyk-report.json"))));
 
             if (vulns == null || !vulns.isArray() || vulns.size() == 0) {
                 System.out.println("Snyk report is empty. Skipping.");
