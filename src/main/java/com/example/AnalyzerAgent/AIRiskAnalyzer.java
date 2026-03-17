@@ -47,7 +47,7 @@ public class AIRiskAnalyzer {
         String body = mapper.writeValueAsString(requestBody);
         System.out.println("REQUEST BODY:\n" + body);
 
-        int maxRetries = 5;
+        int maxRetries = 2;
 int retryCount = 0;
 long waitTimeMs = 2000; // 2 seconds initial
 
