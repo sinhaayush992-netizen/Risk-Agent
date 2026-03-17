@@ -36,11 +36,17 @@ public class SnykReporterParser {
                 if(count>3)
                     break;
                 System.out.println("Proccesing Report...");
+
  
  
                 String title=v.get("title").asText();
                 String severity=v.get("severity").asText();
                 String pkg=v.get("packageName").asText();
+
+                if(!severity.equalsIgnoreCase("high") && severity.equalsIgnoreCase("critical")){
+                    System.out.println("Low Severity");
+                    continue;
+                }
  
                 RiskAnalysis risk =
                 AIRiskAnalyzer.analyze("SNYK",title,severity,pkg);
