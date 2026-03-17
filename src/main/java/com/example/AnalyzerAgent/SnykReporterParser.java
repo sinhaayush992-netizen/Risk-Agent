@@ -39,14 +39,14 @@ public class SnykReporterParser {
  
  
                 String title=v.get("title").asText();
-                String severity=v.get("severity").asText();
-                String pkg=v.get("packageName").asText();
-
-                if(!severity.equalsIgnoreCase("critical")){
-                    System.out.println("Low Severity");
+                String severity = v.has("severityWithCritical") ? v.get("severityWithCritical").asText() : v.get("severity").asText();
+                if (!severity.equalsIgnoreCase("critical")) {
+                 System.out.println("Skipping non-critical vulnerability: " + severity);
                     continue;
-                }
-                if(count>3)
+                    }
+                String pkg=v.get("packageName").asText();
+                System.out.println("Count:"+count);
+                if(count>1)
                     break;
  
                 RiskAnalysis risk =

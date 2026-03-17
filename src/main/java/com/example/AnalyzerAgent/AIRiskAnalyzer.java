@@ -47,52 +47,37 @@ public class AIRiskAnalyzer {
         String body = mapper.writeValueAsString(requestBody);
         System.out.println("REQUEST BODY:\n" + body);
 
-        // Retry logic
-        int maxRetries = 1;
-        int retryCount = 0;
-        int waitTimeSeconds = 2; // initial wait time for backoff
-        int ATTEMPT=0;
-        String response = null;
-        int count=0;
+        int maxRetries = 5;
+int retryCount = 0;
+long waitTimeMs = 2000; // 2 seconds initial
 
-        while (retryCount < maxRetries) {
-            try {
-                System.out.println("CALLING AI API KEY");
-                response = Request.post("https://api.openai.com/v1/chat/completions")
-                        .addHeader("Accept", "application/json")
-                        .addHeader("Authorization", "Bearer " + API_KEY)
-                        .addHeader("Content-Type", "application/json")
-                        .bodyString(body, ContentType.APPLICATION_JSON)
-                        .execute()
-                        .returnContent()
-                        .asString();
+String response= null;
 
-                        count++;
-                        if(count>3)
-                         break;
-
-                System.out.println("AI response received");
-                break; // success
-            } catch (org.apache.hc.client5.http.HttpResponseException ex) {
-                if (ex.getStatusCode() == 429) {
-                    // Rate limit hit, retry with exponential backoff
-                    retryCount++;
-                    ATTEMPT++;
-                    System.out.println("Rate limit hit. Retrying in " + waitTimeSeconds + " seconds...");
-                    Thread.sleep(2000*ATTEMPT);
-                    waitTimeSeconds *= 2; // exponential backoff
-                } else {
-                    // Other HTTP errors
-                    throw ex;
-                }
-            }
+while (retryCount < maxRetries) {
+    try {
+        response = Request.post("https://api.openai.com/v1/chat/completions")
+            .addHeader("Authorization", "Bearer " + API_KEY)
+            .addHeader("Content-Type", "application/json")
+            .bodyString(body, ContentType.APPLICATION_JSON)
+            .execute()
+            .returnContent()
+            .asString();
+        break; // success
+    } catch (org.apache.hc.client5.http.HttpResponseException ex) {
+        if (ex.getStatusCode() == 429) { // rate limit
+            retryCount++;
+            System.out.println("Rate limit hit. Retrying in " + waitTimeMs/1000 + " seconds...");
+            Thread.sleep(waitTimeMs);
+            waitTimeMs *= 2; // exponential backoff
+        } else {
+            throw ex;
         }
-
-        if (response == null || response.isEmpty()) {
-            System.out.println("AI response is null or empty after retries");
-            return null;
-        }
-
+    }
+}
+if (response == null || response.isEmpty()) {
+    System.out.println("AI response is null after retries. Skipping this vulnerability.");
+    return null;
+}
         // Parse response
         JsonNode root = mapper.readTree(response);
         String content = root.get("choices")
