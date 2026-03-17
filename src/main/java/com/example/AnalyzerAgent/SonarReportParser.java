@@ -39,6 +39,7 @@ public class SonarReportParser {
  
                 RiskAnalysis risk=
                 AIRiskAnalyzer.analyze("SONAR",message,severity,"code");
+                Thread.sleep(3000);
  
                 String summary="[SONAR] "+message;
  
