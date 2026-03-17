@@ -69,7 +69,7 @@ public class AIRiskAnalyzer {
 
                         count++;
                         if(count>3)
-                        return null;
+                         break;
 
                 System.out.println("AI response received");
                 break; // success
