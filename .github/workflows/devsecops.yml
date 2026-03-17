@@ -50,11 +50,17 @@ jobs:
     - name: Install Snyk
       run: npm install -g snyk
  
+    - name: Verify DevSecOps Folder
+      run: ls -R DevSecOps-Agent
+
+    - name: Build Project
+      run: mvn -f DevSecOps-Agent/pom.xml clean install -DskipTests
+
     - name: Authenticate Snyk
       run: snyk auth ${{ secrets.SNYK_TOKEN }}
  
     - name: Snyk Security Scan
-      run: snyk test --file=DevSecOps-Agent/pom.xml
+      run: snyk test --file=DevSecOps-Agent/pom.xml -d
       continue-on-error: true
  
     - name: Generate Snyk Report
