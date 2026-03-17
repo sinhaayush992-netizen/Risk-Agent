@@ -7,7 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class AnalyzerAgentApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AnalyzerAgentApplication.class, args);
+		//SpringApplication.run(AnalyzerAgentApplication.class, args);
+		SnykReporterParser.parse();
+		SonarReportParser.parse();
+		System.out.println("Analysis Completed");
 	}
 
 	
