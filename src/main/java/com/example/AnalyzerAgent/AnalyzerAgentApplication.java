@@ -7,8 +7,9 @@ public class AnalyzerAgentApplication {
 		//SpringApplication.run(AnalyzerAgentApplication.class, args);
 		System.out.println("Starting Analysis");
 		try{
+			SnykReporterParser.parse();
 		SonarReportParser.parse();
-		SnykReporterParser.parse();
+		
 		
 		}
 		catch(Exception e){
