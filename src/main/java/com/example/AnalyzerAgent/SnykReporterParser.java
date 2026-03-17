@@ -33,8 +33,7 @@ public class SnykReporterParser {
             if(vulns==null) return;
             int count =0;
             for(JsonNode v:vulns){
-                if(count>3)
-                    break;
+                
                 System.out.println("Proccesing Report...");
 
  
@@ -47,15 +46,17 @@ public class SnykReporterParser {
                     System.out.println("Low Severity");
                     continue;
                 }
+                if(count>3)
+                    break;
  
                 RiskAnalysis risk =
                 AIRiskAnalyzer.analyze("SNYK",title,severity,pkg);
                 Thread.sleep(10000);
- 
+                count++;
                 String summary="[SNYK] "+title;
  
                 JiraService.createTicketIfNeeded(summary,risk);
-                count++;
+                
  
             }
  
