@@ -43,7 +43,7 @@ public class SnykReporterParser {
                 String severity=v.get("severity").asText();
                 String pkg=v.get("packageName").asText();
 
-                if(!severity.equalsIgnoreCase("high") && severity.equalsIgnoreCase("critical")){
+                if(severity.equalsIgnoreCase("critical")){
                     System.out.println("Low Severity");
                     continue;
                 }

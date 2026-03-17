@@ -48,7 +48,7 @@ public class AIRiskAnalyzer {
         System.out.println("REQUEST BODY:\n" + body);
 
         // Retry logic
-        int maxRetries = 3;
+        int maxRetries = 1;
         int retryCount = 0;
         int waitTimeSeconds = 2; // initial wait time for backoff
         int ATTEMPT=0;
