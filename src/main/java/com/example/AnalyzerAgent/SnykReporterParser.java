@@ -16,13 +16,17 @@ public class SnykReporterParser {
  
             ObjectMapper mapper=new ObjectMapper();
  
-            JsonNode root =
-            mapper.readTree(new File("snyk-report.json"));
+            JsonNode root = mapper.readTree(new File("snyk-report.json"));
  
             JsonNode vulns=root.get("vulnerabilities");
+
+            if (vulns == null || !vulns.isArray() || vulns.size() == 0) {
+                System.out.println("Snyk report is empty. Skipping.");
+                return;
+            }
  
             if(vulns==null) return;
-            int count =3;
+            int count =0;
             for(JsonNode v:vulns){
                 if(count>3)
                     break;
