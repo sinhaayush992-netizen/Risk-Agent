@@ -35,6 +35,8 @@ public class AIRiskAnalyzer {
             "\"model\":\"gpt-4o-mini\","+
             "\"messages\":[{\"role\":\"user\",\"content\":\""+prompt+"\"}]"+
             "}";
+
+            System.out.println("Calling AI..");
  
             String response =
             Request.post("https://api.openai.com/v1/chat/completions")
@@ -44,6 +46,8 @@ public class AIRiskAnalyzer {
             .execute()
             .returnContent()
             .asString();
+
+             System.out.println("Response Recived..");
  
             ObjectMapper mapper=new ObjectMapper();
  

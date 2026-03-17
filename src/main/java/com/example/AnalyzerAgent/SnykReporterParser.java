@@ -9,6 +9,8 @@ import java.io.File;
 public class SnykReporterParser {
  
     public static void parse(){
+
+        System.out.println("Reading Snyk Report...");
  
         try{
  
@@ -20,8 +22,12 @@ public class SnykReporterParser {
             JsonNode vulns=root.get("vulnerabilities");
  
             if(vulns==null) return;
- 
+            int count =3;
             for(JsonNode v:vulns){
+                if(count>3)
+                    break;
+                System.out.println("Proccesing Report...");
+ 
  
                 String title=v.get("title").asText();
                 String severity=v.get("severity").asText();
@@ -33,6 +39,7 @@ public class SnykReporterParser {
                 String summary="[SNYK] "+title;
  
                 JiraService.createTicketIfNeeded(summary,risk);
+                count++;
  
             }
  
