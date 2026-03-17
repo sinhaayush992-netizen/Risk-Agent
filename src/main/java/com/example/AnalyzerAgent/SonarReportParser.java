@@ -3,6 +3,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
  
 import java.net.URL;
+
+import javax.management.RuntimeErrorException;
  
 public class SonarReportParser {
  
@@ -12,6 +14,11 @@ public class SonarReportParser {
  
             String projectKey=
             System.getenv("SONAR_PROJECT_KEY");
+
+            if(projectKey==null || projectKey.isEmpty()){
+                System.out.println("Project Key Misssing");
+                throw new RuntimeErrorException(null, "SONAR_PROJECT_KEY is MISSing");
+            }
  
             String api=
             "https://sonarcloud.io/api/issues/search?componentKeys="+projectKey;
