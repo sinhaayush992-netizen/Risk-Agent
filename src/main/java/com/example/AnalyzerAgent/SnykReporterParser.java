@@ -37,7 +37,7 @@ public class SnykReporterParser {
                 String title=v.get("title").asText();
                 System.out.println("Proccesing Report..."+title);
                 String severity = v.has("severityWithCritical") ? v.get("severityWithCritical").asText() : v.get("severity").asText();
-                if (!severity.equalsIgnoreCase("critical")) {
+                if (!severity.equalsIgnoreCase("critical") &&  !title.toLowerCase().contains("remote code execution")) {
                  System.out.println("Skipping non-critical vulnerability: " + severity);
                     continue;
                     }

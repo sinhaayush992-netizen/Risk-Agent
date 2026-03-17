@@ -49,7 +49,7 @@ public class AIRiskAnalyzer {
 
         int maxRetries = 2;
 int retryCount = 0;
-long waitTimeMs = 2000; // 2 seconds initial
+long waitTimeMs = 8000; // 2 seconds initial
 
 String response= null;
 
