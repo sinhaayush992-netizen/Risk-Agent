@@ -60,6 +60,7 @@ public class JiraService {
     public static void createTicketIfNeeded(String summary,RiskAnalysis risk){
  
         try{
+            System.out.println("Check");
  
             if(risk==null) return;
  
@@ -82,6 +83,7 @@ public class JiraService {
             "Risk Score: "+risk.riskScore+"\n\n"+
             "Impact:\n"+risk.businessImpact+"\n\n"+
             "Fix:\n"+risk.remediation;
+        System.out.println("Staring Ticket Creation");
  
             createTicket(summary,description);
  
@@ -94,6 +96,8 @@ public class JiraService {
     public static void createTicket(String summary,String description){
  
         try{
+
+            System.out.println("Ticket Creating");
  
             String url=JIRA_URL+"/issue";
  

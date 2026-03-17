@@ -48,13 +48,15 @@ public class AIRiskAnalyzer {
         System.out.println("REQUEST BODY:\n" + body);
 
         // Retry logic
-        int maxRetries = 5;
+        int maxRetries = 3;
         int retryCount = 0;
         int waitTimeSeconds = 2; // initial wait time for backoff
+        int ATTEMPT=0;
         String response = null;
 
         while (retryCount < maxRetries) {
             try {
+                System.out.println("CALLING AI API KEY");
                 response = Request.post("https://api.openai.com/v1/chat/completions")
                         .addHeader("Accept", "application/json")
                         .addHeader("Authorization", "Bearer " + API_KEY)
@@ -71,7 +73,7 @@ public class AIRiskAnalyzer {
                     // Rate limit hit, retry with exponential backoff
                     retryCount++;
                     System.out.println("Rate limit hit. Retrying in " + waitTimeSeconds + " seconds...");
-                    Thread.sleep(waitTimeSeconds * 1000L);
+                    Thread.sleep(2000*ATTEMPT);
                     waitTimeSeconds *= 2; // exponential backoff
                 } else {
                     // Other HTTP errors
