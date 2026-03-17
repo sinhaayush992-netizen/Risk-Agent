@@ -71,9 +71,11 @@ jobs:
     #RUN AI ANALYZER AGENT
     - name: Build Analyzer Agent
       run: mvn -f DevSecOps-Agent/pom.xml package
+    - name: Check Target Folder
+      run: ls DevSecOps-Agent/target
  
     - name: Run Analyzer Agent (AI + Jira)
-      run: java -jar DevSecOps-Agent/target/analyzer-agent-1.0.jar
+      run: java -jar DevSecOps-Agent/target/*.jar
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         JIRA_URL: ${{ secrets.JIRA_URL }}
