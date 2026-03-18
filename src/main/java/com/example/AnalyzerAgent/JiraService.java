@@ -9,7 +9,7 @@ import java.util.Base64;
  
 public class JiraService {
  
-    private static final String JIRA_URL="https://sinhaayush992.atlassian.net/rest/api/3";
+    private static final String JIRA_URL="https://sinhaayush992.atlassian.net";
     private static final String EMAIL=System.getenv("JIRA_EMAIL");
     private static final String TOKEN=System.getenv("JIRA_TOKEN");
     private static final String PROJECT=System.getenv("JIRA_PROJECT_KEY");
@@ -28,12 +28,11 @@ public class JiraService {
  
         try{
  
-            String jql=
-            "project="+PROJECT+
-            " AND summary~\""+summary+"\"";
+            String jql="project="+PROJECT+" AND summary~\""+summary+"\"";
  
-            String url=
-            JIRA_URL+"/search?jql="+jql;
+            // String url=
+            // JIRA_URL+"/search?jql="+jql;
+            String url= JIRA_URL+"/rest/api/3/search?jql="+java.net.URLEncoder.encode(jql, "UTF-8");
  
             String response=
             Request.get(url)
@@ -108,7 +107,10 @@ public class JiraService {
 
             System.out.println("Ticket Creating");
  
-            String url=JIRA_URL+"/issue";
+           // String url=JIRA_URL+"/issue";
+           String url=JIRA_URL+"/rest/api/3/issue";
+
+            System.out.println("iNSIDE tICKET JIRA_URL = " + JIRA_URL);
  
             String body=
             "{"+
