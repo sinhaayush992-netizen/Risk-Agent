@@ -243,11 +243,12 @@ public class SnykReporterParser {
 
                 if (risk == null) {
                     System.out.println("AI analysis failed. Creating Jira ticket anyway.");
-                    risk = new RiskAnalysis();
-                    risk.criticality = severity.equalsIgnoreCase("critical") ? "Critical" : "High";
-                    risk.riskScore = severity.equalsIgnoreCase("critical") ? 10 : 8;
-                    risk.businessImpact = "Manual review required. Refer to Snyk report.";
-                    risk.remediation = "Upgrade or patch as recommended in the Snyk report.";
+                    continue;
+                    // risk = new RiskAnalysis();
+                    // risk.criticality = severity.equalsIgnoreCase("critical") ? "Critical" : "High";
+                    // risk.riskScore = severity.equalsIgnoreCase("critical") ? 10 : 8;
+                    // risk.businessImpact = "Manual review required. Refer to Snyk report.";
+                    // risk.remediation = "Upgrade or patch as recommended in the Snyk report.";
                 }
 
                 String summary = "[SNYK] " + title;

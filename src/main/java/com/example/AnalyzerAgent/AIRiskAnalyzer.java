@@ -175,7 +175,7 @@ class AIRiskAnalyzer {
                             .execute()
                             .returnContent()
                             .asString();
-
+                    System.out.println("Raw AI Response: " + response);
                     aiCallsThisRun++;
                     break;
 
