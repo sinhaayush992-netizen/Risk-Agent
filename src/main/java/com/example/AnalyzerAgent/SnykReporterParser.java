@@ -124,29 +124,26 @@ public class SnykReporterParser {
 
             // Step 3: Process vulnerabilities and create Jira tickets
             int processedCount = 0;
-            int maxTicketsPerRun = 2; // limit tickets per run
+            int maxTicketsPerRun = 3; // limit tickets per run
             for (JsonNode v : highRiskVulns) {
                 if (processedCount >= maxTicketsPerRun) break;
 
                 String title = v.get("title").asText();
                 String severity = v.has("severityWithCritical") ? v.get("severityWithCritical").asText() : v.get("severity").asText();
                 String pkg = v.get("packageName").asText();
-
+                double cvssScore = v.has("cvssScore") ? v.get("cvssScore").asDouble() : 0.0;
                 System.out.println("Processing high-risk vulnerability: " + title);
 
                 // Call AI for risk analysis (Groq)
                 RiskAnalysis risk = AIRiskAnalyzer.analyze("SNYK", title, severity, pkg);
 
                 if (risk == null) {
-                    System.out.println("AI analysis failed. Using fallback values.");
-                    risk = new RiskAnalysis();
-                    risk.criticality = severity.equalsIgnoreCase("critical") ? "Critical" : "High";
-                    risk.riskScore = severity.equalsIgnoreCase("critical") ? 10 : 8;
-                    risk.businessImpact = "Manual review required. Refer to Snyk report.";
-                    risk.remediation = "Upgrade or patch as recommended in the Snyk report.";
+                    System.out.println("AI analysis failed.");
+                    continue;
                 }
 
-                String summary = "[SNYK] " + title;
+                //String summary = "[SNYK] " + title;
+                String summary = "[SNYK] " + title + " | " + pkg + " | Severity: " + severity + " | CVSS: " + cvssScore;
                 JiraService.createTicketIfNeeded(summary, risk); // Implement your Jira ticket logic here
 
                 processedCount++;

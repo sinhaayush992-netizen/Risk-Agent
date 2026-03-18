@@ -62,7 +62,7 @@ public class JiraService {
         System.out.println("Inside Ticket Exist");
 
         // Proper JQL
-        String jql = "project=" + PROJECT + " AND summary~\"" + summary + "\"";
+        String jql = "project=" + PROJECT + " AND summary=\"" + summary + "\"";
 
         // Encode the JQL
         String url = JIRA_URL + "/rest/api/3/search?jql=" + URLEncoder.encode(jql, StandardCharsets.UTF_8);
