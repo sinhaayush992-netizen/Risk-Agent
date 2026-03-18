@@ -9,7 +9,7 @@ import java.util.Base64;
  
 public class JiraService {
  
-    private static final String JIRA_URL=System.getenv("JIRA_URL");
+    private static final String JIRA_URL="https://sinhaayush992.atlassian.net/rest/api/3";
     private static final String EMAIL=System.getenv("JIRA_EMAIL");
     private static final String TOKEN=System.getenv("JIRA_TOKEN");
     private static final String PROJECT=System.getenv("JIRA_PROJECT_KEY");
@@ -65,6 +65,9 @@ public class JiraService {
             System.out.println("JIRA_URL = " + JIRA_URL);
             System.out.println("EMAIL = " + EMAIL);
             System.out.println("PROJECT = " + PROJECT);
+            System.out.println("EMAIL length = " + (EMAIL == null ? "null" : EMAIL.length()));
+            System.out.println("TOKEN length = " + (TOKEN == null ? "null" : TOKEN.length()));
+            System.out.println("PROJECT length = " + (PROJECT == null ? "null" : PROJECT.length()));
  
             if(risk==null) return;
  
