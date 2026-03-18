@@ -32,14 +32,17 @@ public class SnykReporterParser {
 
             int count =0;
             int processedCount=0;
+            int vulnerability=0;
             for(JsonNode v:vulns){
+                vulnerability++;
                 double cvssScore = v.has("cvssScore") ? v.get("cvssScore").asDouble() : 0.0;
-
+                System.out.println("Vulnerabilty no."+vulnerability);
            
                 String title=v.get("title").asText();
                 System.out.println("Proccesing Report..."+title);
                  // Skip low severity vulnerabilities (score < 8)
-                if (cvssScore < 8.0) {
+                if (cvssScore < 9.0) {
+                     System.out.println("Skiped Vulnerabilty no."+vulnerability);
                  System.out.println("Skipping low severity vulnerability (CVSS: " + cvssScore + "): " + title);
                 continue;
                  }
@@ -52,7 +55,7 @@ public class SnykReporterParser {
                 System.out.println("Count:"+count);
                 if(count>1)
                     break;
- 
+                 System.out.println("Excecute Vulnerabilty no."+vulnerability);
                 RiskAnalysis risk = AIRiskAnalyzer.analyze("SNYK",title,severity,pkg);
                 Thread.sleep(4000);
                 count++;
