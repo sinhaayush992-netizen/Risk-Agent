@@ -8,7 +8,8 @@ public class AnalyzerAgentApplication {
 		System.out.println("Starting Analysis");
 		try{
 			SnykReporterParser.parse();
-		//SonarReportParser.parse();
+			System.out.println("Starting Sonar Analysis");
+		    SonarReportParser.parse();
 		
 		
 		}
