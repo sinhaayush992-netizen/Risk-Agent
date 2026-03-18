@@ -26,37 +26,84 @@ public class JiraService {
         Base64.getEncoder().encodeToString(cred.getBytes());
     }
  
-    public static boolean ticketExists(String summary){
+    // public static boolean ticketExists(String summary){
  
-        try{
-                System.out.println("Inside Ticket Exist");
-            String jql="project="+PROJECT+" AND summary~\""+summary+"\"";
-                 System.out.println("1");
-            // String url=
-            // JIRA_URL+"/search?jql="+jql;
-            String url= JIRA_URL+"/rest/api/3/search?jql="+URLEncoder.encode(jql, StandardCharsets.UTF_8);
-                System.out.println("2");
-            String response=Request.get(url)
-                            .addHeader("Authorization",auth())
-                            .execute()
-                            .returnContent()
-                            .asString();
-            System.out.println("3");
-            ObjectMapper mapper=new ObjectMapper();
-            System.out.println("4");
-            JsonNode root=mapper.readTree(response);
-                System.out.println("5");
-            int total=root.get("total").asInt();
-                System.out.println("6");
-            return total>0;
+    //     try{
+    //             System.out.println("Inside Ticket Exist");
+    //         String jql="project="+PROJECT+" AND summary~\""+summary+"\"";
+    //              System.out.println("1");
+    //         // String url=
+    //         // JIRA_URL+"/search?jql="+jql;
+    //         String url= JIRA_URL+"/rest/api/3/search?jql="+URLEncoder.encode(jql, StandardCharsets.UTF_8);
+    //             System.out.println("2");
+    //         String response=Request.get(url)
+    //                         .addHeader("Authorization",auth())
+    //                         .execute()
+    //                         .returnContent()
+    //                         .asString();
+    //         System.out.println("3");
+    //         ObjectMapper mapper=new ObjectMapper();
+    //         System.out.println("4");
+    //         JsonNode root=mapper.readTree(response);
+    //             System.out.println("5");
+    //         int total=root.get("total").asInt();
+    //             System.out.println("6");
+    //         return total>0;
  
-        }catch(Exception e){
-            System.out.println("7");
-            e.printStackTrace();
+    //     }catch(Exception e){
+    //         System.out.println("7");
+    //         e.printStackTrace();
+    //     }
+ 
+    //     return false;
+    // }
+    public static boolean ticketExists(String summary) {
+    try {
+        System.out.println("Inside Ticket Exist");
+
+        // Proper JQL
+        String jql = "project=" + PROJECT + " AND summary~\"" + summary + "\"";
+
+        // Encode the JQL
+        String url = JIRA_URL + "/rest/api/3/search?jql=" + URLEncoder.encode(jql, StandardCharsets.UTF_8);
+
+        System.out.println("Searching Jira URL: " + url);
+
+        // Add Accept header and Authorization
+        String response = Request.get(url)
+                .addHeader("Authorization", auth())
+                .addHeader("Accept", "application/json")
+                .execute()
+                .returnContent()
+                .asString();
+
+        System.out.println("Response from Jira search: " + response);
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(response);
+
+        // Safety check
+        if (root.has("total")) {
+            int total = root.get("total").asInt();
+            return total > 0;
+        } else {
+            System.out.println("No 'total' field found in search response.");
         }
- 
-        return false;
+
+    } catch (org.apache.hc.client5.http.HttpResponseException e) {
+        // Special handling for Jira 410 Gone
+        System.out.println("Jira search returned HTTP " + e.getStatusCode() + ": " + e.getReasonPhrase());
+        if (e.getStatusCode() == 410) {
+            System.out.println("API deprecated or endpoint not available. Skipping ticketExists check.");
+            return false; // allow ticket creation
+        }
+        e.printStackTrace();
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+
+    return false;
+}
  
     public static void createTicketIfNeeded(String summary,RiskAnalysis risk){
  
@@ -103,40 +150,81 @@ public class JiraService {
  
     }
  
-    public static void createTicket(String summary,String description){
+    // public static void createTicket(String summary,String description){
  
-        try{
+    //     try{
 
-            System.out.println("Ticket Creating");
+    //         System.out.println("Ticket Creating");
  
-           // String url=JIRA_URL+"/issue";
-           String url=JIRA_URL+"/rest/api/3/issue";
+    //        // String url=JIRA_URL+"/issue";
+    //        String url=JIRA_URL+"/rest/api/3/issue";
 
-            System.out.println("iNSIDE tICKET JIRA_URL = " + JIRA_URL);
-            System.out.println("iNSIDE tICKET JIRA_URL = " + url);
+    //         System.out.println("iNSIDE tICKET JIRA_URL = " + JIRA_URL);
+    //         System.out.println("iNSIDE tICKET JIRA_URL = " + url);
  
-            String body=
-            "{"+
-            "\"fields\":{"+
-            "\"project\":{\"key\":\""+PROJECT+"\"},"+
-            "\"summary\":\""+summary+"\","+
-            "\"description\":\""+description+"\","+
-            "\"issuetype\":{\"name\":\"Task\"}"+
-            "}"+
-            "}";
+    //         String body=
+    //         "{"+
+    //         "\"fields\":{"+
+    //         "\"project\":{\"key\":\""+PROJECT+"\"},"+
+    //         "\"summary\":\""+summary+"\","+
+    //         "\"description\":\""+description+"\","+
+    //         "\"issuetype\":{\"name\":\"Task\"}"+
+    //         "}"+
+    //         "}";
  
-            Request.post(url)
-            .addHeader("Authorization",auth())
-            .addHeader("Content-Type","application/json")
-            .bodyString(body,ContentType.APPLICATION_JSON)
-            .execute();
+    //         Request.post(url)
+    //         .addHeader("Authorization",auth())
+    //         .addHeader("Content-Type","application/json")
+    //         .bodyString(body,ContentType.APPLICATION_JSON)
+    //         .execute();
  
-            System.out.println("Jira ticket created");
+    //         System.out.println("Jira ticket created");
  
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+    //     }catch(Exception e){
+    //         e.printStackTrace();
+    //     }
  
+    // }
+ 
+    public static void createTicket(String summary, String description) {
+    try {
+        System.out.println("Ticket Creating");
+
+        String url = JIRA_URL + "/rest/api/3/issue";
+        System.out.println("iNSIDE tICKET JIRA_URL = " + url);
+
+        // Build description in Atlassian Document Format (ADF)
+        String adfDescription = "{"
+                + "\"type\":\"doc\","
+                + "\"version\":1,"
+                + "\"content\":[{"
+                +     "\"type\":\"paragraph\","
+                +     "\"content\":[{"
+                +         "\"type\":\"text\","
+                +         "\"text\":\"" + description.replace("\n", "\\n").replace("\"", "\\\"") + "\""
+                +     "}]"
+                + "}]"
+                + "}";
+
+        String body = "{"
+                + "\"fields\":{"
+                +     "\"project\":{\"key\":\"" + PROJECT + "\"},"
+                +     "\"summary\":\"" + summary + "\","
+                +     "\"description\":" + adfDescription + ","
+                +     "\"issuetype\":{\"name\":\"Task\"}"
+                + "}"
+                + "}";
+
+        Request.post(url)
+                .addHeader("Authorization", auth())
+                .addHeader("Content-Type", "application/json")
+                .bodyString(body, ContentType.APPLICATION_JSON)
+                .execute();
+
+        System.out.println("Jira ticket created");
+
+    } catch (Exception e) {
+        e.printStackTrace();
     }
- 
+}
 }
