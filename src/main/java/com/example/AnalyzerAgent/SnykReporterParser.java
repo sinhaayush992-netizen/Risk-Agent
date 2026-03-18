@@ -33,9 +33,16 @@ public class SnykReporterParser {
             int count =0;
             int processedCount=0;
             for(JsonNode v:vulns){
-       
+                double cvssScore = v.has("cvssScore") ? v.get("cvssScore").asDouble() : 0.0;
+
+           
                 String title=v.get("title").asText();
                 System.out.println("Proccesing Report..."+title);
+                 // Skip low severity vulnerabilities (score < 8)
+                if (cvssScore < 8.0) {
+                 System.out.println("Skipping low severity vulnerability (CVSS: " + cvssScore + "): " + title);
+                continue;
+                 }
                 String severity = v.has("severityWithCritical") ? v.get("severityWithCritical").asText() : v.get("severity").asText();
                 if (!severity.equalsIgnoreCase("critical") &&  !title.toLowerCase().contains("remote code execution")) {
                  System.out.println("Skipping non-critical vulnerability: " + severity);
@@ -47,7 +54,7 @@ public class SnykReporterParser {
                     break;
  
                 RiskAnalysis risk = AIRiskAnalyzer.analyze("SNYK",title,severity,pkg);
-                Thread.sleep(2000);
+                Thread.sleep(4000);
                 count++;
                  if (risk == null) {
                     System.out.println("AI analysis failed. Creating Jira ticket anyway.");
@@ -65,7 +72,7 @@ public class SnykReporterParser {
                 if (processedCount >= 2) break; // Optional: limit tickets per run
 
                 // Small delay to avoid API rate limits
-                Thread.sleep(2000);
+                Thread.sleep(4000);
                 
  
             }
