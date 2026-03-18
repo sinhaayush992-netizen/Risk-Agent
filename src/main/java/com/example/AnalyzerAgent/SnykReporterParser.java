@@ -155,6 +155,7 @@ public class SnykReporterParser {
 
             if (risk == null) {
                 System.out.println("AI analysis failed. Creating Jira ticket anyway.");
+             //   continue;
                 risk = new RiskAnalysis();
                 risk.criticality = severity.equalsIgnoreCase("critical") ? "Critical" : "High";
                 risk.riskScore = severity.equalsIgnoreCase("critical") ? 10 : 8;
