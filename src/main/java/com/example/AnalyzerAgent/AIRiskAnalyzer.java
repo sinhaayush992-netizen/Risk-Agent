@@ -125,7 +125,7 @@ class AIRiskAnalyzer {
     // }
     //------------------For Groq--------------------------------------------
     private static int aiCallsThisRun = 0;
-    private static final int MAX_AI_CALLS_PER_RUN = 2; // limit AI calls per run
+    private static final int MAX_AI_CALLS_PER_RUN = 4; // limit AI calls per run
 
     public static RiskAnalysis analyze(String tool, String title, String severity, String component) {
         ObjectMapper mapper = new ObjectMapper();

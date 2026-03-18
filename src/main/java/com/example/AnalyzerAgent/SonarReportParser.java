@@ -40,8 +40,10 @@ public class SonarReportParser {
                 RiskAnalysis risk=
                 AIRiskAnalyzer.analyze("SONAR",message,severity,"code");
                 Thread.sleep(10000);
- 
-                String summary="[SONAR] "+message;
+                
+                String safeMessage = message.replaceAll("[^a-zA-Z0-9\\s]", "_"); // replace special chars with underscore
+                String summary = "[SONAR] " + safeMessage;
+               // String summary="[SONAR] "+message;
  
                 JiraService.createTicketIfNeeded(summary,risk);
  
