@@ -4,7 +4,9 @@ import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.core5.http.ContentType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
- 
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
  
 public class JiraService {
@@ -27,29 +29,29 @@ public class JiraService {
     public static boolean ticketExists(String summary){
  
         try{
- 
+                System.out.println("Inside Ticket Exist");
             String jql="project="+PROJECT+" AND summary~\""+summary+"\"";
- 
+                 System.out.println("1");
             // String url=
             // JIRA_URL+"/search?jql="+jql;
-            String url= JIRA_URL+"/rest/api/3/search?jql="+java.net.URLEncoder.encode(jql, "UTF-8");
- 
-            String response=
-            Request.get(url)
-            .addHeader("Authorization",auth())
-            .execute()
-            .returnContent()
-            .asString();
- 
+            String url= JIRA_URL+"/rest/api/3/search?jql="+URLEncoder.encode(jql, StandardCharsets.UTF_8);
+                System.out.println("2");
+            String response=Request.get(url)
+                            .addHeader("Authorization",auth())
+                            .execute()
+                            .returnContent()
+                            .asString();
+            System.out.println("3");
             ObjectMapper mapper=new ObjectMapper();
- 
+            System.out.println("4");
             JsonNode root=mapper.readTree(response);
- 
+                System.out.println("5");
             int total=root.get("total").asInt();
- 
+                System.out.println("6");
             return total>0;
  
         }catch(Exception e){
+            System.out.println("7");
             e.printStackTrace();
         }
  
@@ -111,6 +113,7 @@ public class JiraService {
            String url=JIRA_URL+"/rest/api/3/issue";
 
             System.out.println("iNSIDE tICKET JIRA_URL = " + JIRA_URL);
+            System.out.println("iNSIDE tICKET JIRA_URL = " + url);
  
             String body=
             "{"+
