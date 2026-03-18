@@ -144,7 +144,7 @@ public class SnykReporterParser {
 
                 //String summary = "[SNYK] " + title;
                 String summary = "[SNYK] " + title;
-                JiraService.createTicketIfNeeded(summary, risk); // Implement your Jira ticket logic here
+              //  JiraService.createTicketIfNeeded(summary, risk); // Implement your Jira ticket logic here
 
                 processedCount++;
                 Thread.sleep(2000); // avoid API spam
