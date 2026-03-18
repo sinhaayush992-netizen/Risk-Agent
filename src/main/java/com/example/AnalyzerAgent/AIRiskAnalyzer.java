@@ -50,11 +50,14 @@ public class AIRiskAnalyzer {
         int maxRetries = 2;
         int retryCount = 0;
         long waitTimeMs = 8000; // 2 seconds initial
+        int maxAiCalls=1;
 
 String response= null;
 
 while (retryCount < maxRetries) {
     try {
+        if(maxAiCalls>=2)
+            break;
         response = Request.post("https://api.openai.com/v1/chat/completions")
             .addHeader("Authorization", "Bearer " + API_KEY)
             .addHeader("Content-Type", "application/json")
@@ -62,6 +65,8 @@ while (retryCount < maxRetries) {
             .execute()
             .returnContent()
             .asString();
+
+            maxAiCalls++;
         break; // success
     } catch (org.apache.hc.client5.http.HttpResponseException ex) {
         if (ex.getStatusCode() == 429) { // rate limit
