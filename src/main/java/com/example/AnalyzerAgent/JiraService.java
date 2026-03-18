@@ -61,6 +61,10 @@ public class JiraService {
  
         try{
             System.out.println("Check");
+
+            System.out.println("JIRA_URL = " + JIRA_URL);
+            System.out.println("EMAIL = " + EMAIL);
+            System.out.println("PROJECT = " + PROJECT);
  
             if(risk==null) return;
  
