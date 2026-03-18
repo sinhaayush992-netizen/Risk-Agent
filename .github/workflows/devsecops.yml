@@ -88,7 +88,7 @@ jobs:
       run: java -jar target/*.jar
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        JIRA_URL: ${{ secrets.JIRA_URL }}
+       # JIRA_URL: ${{ secrets.JIRA_URL }}
         JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
         JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
         JIRA_PROJECT_KEY: ${{ secrets.JIRA_PROJECT_KEY }}

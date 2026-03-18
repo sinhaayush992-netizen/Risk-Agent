@@ -6,5 +6,8 @@ public class RiskAnalysis {
     public double riskScore;
     public String businessImpact;
     public String remediation;
+
+
+    
  
 }
