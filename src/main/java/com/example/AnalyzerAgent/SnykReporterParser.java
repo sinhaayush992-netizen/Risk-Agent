@@ -143,7 +143,7 @@ public class SnykReporterParser {
                 }
 
                 //String summary = "[SNYK] " + title;
-                String summary = "[SNYK] " + title + " | " + pkg + " | Severity: " + severity + " | CVSS: " + cvssScore;
+                String summary = "[SNYK] " + title + " | " + pkg ;
                 JiraService.createTicketIfNeeded(summary, risk); // Implement your Jira ticket logic here
 
                 processedCount++;
