@@ -65,6 +65,8 @@ public class JiraService {
             System.out.println("JIRA_URL = " + JIRA_URL);
             System.out.println("EMAIL = " + EMAIL);
             System.out.println("PROJECT = " + PROJECT);
+            System.out.println("JIRA_URL length = " + (JIRA_URL == null ? "null" : JIRA_URL.length()));
+            System.out.println("JIRA_URL value = [" + JIRA_URL + "]");
             System.out.println("EMAIL length = " + (EMAIL == null ? "null" : EMAIL.length()));
             System.out.println("TOKEN length = " + (TOKEN == null ? "null" : TOKEN.length()));
             System.out.println("PROJECT length = " + (PROJECT == null ? "null" : PROJECT.length()));
