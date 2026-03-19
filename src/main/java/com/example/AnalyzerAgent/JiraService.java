@@ -66,6 +66,7 @@ public class JiraService {
 
         // Encode the JQL
         String url = JIRA_URL + "/rest/api/3/search?jql=" + URLEncoder.encode(jql, StandardCharsets.UTF_8);
+        System.out.println("SEARCH URL: "+url);
 
         System.out.println("Searching Jira URL: " + url);
 

@@ -96,7 +96,7 @@ public class SonarReportParser {
             description.append("Remediation: ").append(risk.remediation).append("\n");
 
             // Create only one ticket
-            JiraService.createTicketIfNeeded(summary, risk);
+           // JiraService.createTicketIfNeeded(summary, risk);
 
         } catch (Exception e) {
             e.printStackTrace();
