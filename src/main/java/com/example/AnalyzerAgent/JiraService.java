@@ -61,32 +61,18 @@ public class JiraService {
     try {
         System.out.println("\n========== CHECKING IF TICKET EXISTS ==========");
 
-        if (summary == null || summary.trim().isEmpty()) {
-            System.out.println("Summary is null or empty → returning false");
-            return false;
-        }
+        if (summary == null || summary.trim().isEmpty()) return false;
 
-        // Normalize summary to avoid hidden spaces issues
         String normalizedSummary = summary.trim().replaceAll("\\s+", " ");
-        System.out.println("Incoming summary: [" + summary + "]");
         System.out.println("Normalized summary: [" + normalizedSummary + "]");
 
-        // Build JQL: exact match for summary, filter out Done tickets
-        String jql = "project=" + PROJECT +
-                     " AND summary=\"" + normalizedSummary + "\"" +
-                     " AND statusCategory != Done";
-
-        System.out.println("Raw JQL: " + jql);
-
+        // Fuzzy search (~) instead of exact match
+        String jql = "project=" + PROJECT + " AND summary ~ \"" + normalizedSummary + "\"";
         String encodedJql = URLEncoder.encode(jql, StandardCharsets.UTF_8);
-        System.out.println("Encoded JQL: " + encodedJql);
 
-        String url = JIRA_URL + "/rest/api/3/search/jql?jql=" + encodedJql +
-                     "&maxResults=5&fields=summary,status";
+        String url = JIRA_URL + "/rest/api/3/search/jql?jql=" + encodedJql + "&maxResults=10&fields=summary,status";
+        System.out.println("Jira URL: " + url);
 
-        System.out.println("Final Jira URL: " + url);
-
-        // Make the GET request to Jira
         String response = Request.get(url)
                 .addHeader("Authorization", auth())
                 .addHeader("Accept", "application/json")
@@ -97,54 +83,35 @@ public class JiraService {
         System.out.println("RAW RESPONSE FROM JIRA: " + response);
 
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode root = mapper.readTree(response);
+        JsonNode issues = mapper.readTree(response).get("issues");
 
-        JsonNode issues = root.get("issues");
-
-        if (issues == null) {
-            System.out.println("No 'issues' field in response → returning false");
+        if (issues == null || issues.size() == 0) {
+            System.out.println("No issues found → safe to create");
             return false;
         }
 
-        System.out.println("Number of issues returned: " + issues.size());
+        System.out.println("Total issues returned: " + issues.size());
 
-        // Log each issue details
         for (JsonNode issue : issues) {
-            String key = issue.get("key").asText();
-            JsonNode fields = issue.get("fields");
+            String foundSummary = issue.get("fields").get("summary").asText();
+            String statusCategoryKey = issue.get("fields").get("status").get("statusCategory").get("key").asText();
 
-            String foundSummary = fields.get("summary").asText();
-            JsonNode statusNode = fields.get("status");
+            System.out.println("Found Summary: [" + foundSummary + "], StatusCategory: " + statusCategoryKey);
 
-            String status = statusNode.get("name").asText();
-            String categoryKey = statusNode.get("statusCategory").get("key").asText();
-            String categoryName = statusNode.get("statusCategory").get("name").asText();
-
-            System.out.println("---- MATCH FOUND ----");
-            System.out.println("Key: " + key);
-            System.out.println("Summary: [" + foundSummary + "]");
-            System.out.println("Status: " + status);
-            System.out.println("Status Category: " + categoryKey + " (" + categoryName + ")");
+            if (foundSummary.equalsIgnoreCase(normalizedSummary) && !statusCategoryKey.equalsIgnoreCase("done")) {
+                System.out.println("Active ticket exists → BLOCK creation");
+                return true;
+            }
         }
 
-        boolean exists = issues.size() > 0;
-        System.out.println("FINAL DECISION: Ticket exists? " + exists);
-        System.out.println("==============================================\n");
+        System.out.println("No active tickets found → safe to create");
+        return false;
 
-        return exists;
-
-    } catch (org.apache.hc.client5.http.HttpResponseException e) {
-        System.out.println("Jira returned HTTP " + e.getStatusCode() + ": " + e.getReasonPhrase());
-        if (e.getStatusCode() == 410) {
-            System.out.println("API deprecated → returning false to allow creation");
-            return false;
-        }
-        e.printStackTrace();
     } catch (Exception e) {
         e.printStackTrace();
     }
 
-    return false; // safe fallback
+    return false;
 }
 //     public static boolean ticketExists(String summary) {
 //     try {
