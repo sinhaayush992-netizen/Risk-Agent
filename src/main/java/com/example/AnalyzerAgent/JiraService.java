@@ -25,110 +25,7 @@ public class JiraService {
         return "Basic "+
         Base64.getEncoder().encodeToString(cred.getBytes());
     }
- 
-    // public static boolean ticketExists(String summary){
- 
-    //     try{
-    //             System.out.println("Inside Ticket Exist");
-    //         String jql="project="+PROJECT+" AND summary~\""+summary+"\"";
-    //              System.out.println("1");
-    //         // String url=
-    //         // JIRA_URL+"/search?jql="+jql;
-    //         String url= JIRA_URL+"/rest/api/3/search?jql="+URLEncoder.encode(jql, StandardCharsets.UTF_8);
-    //             System.out.println("2");
-    //         String response=Request.get(url)
-    //                         .addHeader("Authorization",auth())
-    //                         .execute()
-    //                         .returnContent()
-    //                         .asString();
-    //         System.out.println("3");
-    //         ObjectMapper mapper=new ObjectMapper();
-    //         System.out.println("4");
-    //         JsonNode root=mapper.readTree(response);
-    //             System.out.println("5");
-    //         int total=root.get("total").asInt();
-    //             System.out.println("6");
-    //         return total>0;
- 
-    //     }catch(Exception e){
-    //         System.out.println("7");
-    //         e.printStackTrace();
-    //     }
- 
-    //     return false;
-    // }
-    //duplicate card--
-//    public static boolean ticketExists(String summary) {
-//     try {
-//         System.out.println("\n========== CHECKING IF TICKET EXISTS ==========");
 
-//         if (summary == null || summary.trim().isEmpty()) {
-//             System.out.println("Summary is null or empty → safe to create");
-//             return false;
-//         }
-
-//         // Normalize summary for search
-//         String normalizedSummary = summary.replaceAll("\\[|\\]", "")  // remove [ and ]
-//                                          .replaceAll("\\s+", " ")    // collapse multiple spaces
-//                                          .trim();
-
-//         System.out.println("Original summary: [" + summary + "]");
-//         System.out.println("Normalized summary for Jira search: [" + normalizedSummary + "]");
-
-//         // Build fuzzy JQL search
-//         String jql = "project=" + PROJECT + " AND summary ~ \"" + normalizedSummary + "\"";
-//         String encodedJql = URLEncoder.encode(jql, StandardCharsets.UTF_8);
-
-//         String url = JIRA_URL + "/rest/api/3/search/jql?jql=" + encodedJql +
-//                      "&maxResults=20&fields=summary,status";
-
-//         System.out.println("Jira search URL: " + url);
-
-//         // Call Jira REST API
-//         String response = Request.get(url)
-//                 .addHeader("Authorization", auth())
-//                 .addHeader("Accept", "application/json")
-//                 .execute()
-//                 .returnContent()
-//                 .asString();
-
-//         System.out.println("RAW RESPONSE FROM JIRA: " + response);
-
-//         ObjectMapper mapper = new ObjectMapper();
-//         JsonNode issues = mapper.readTree(response).get("issues");
-
-//         if (issues == null || issues.size() == 0) {
-//             System.out.println("No issues returned → safe to create");
-//             return false;
-//         }
-
-//         System.out.println("Total issues returned: " + issues.size());
-
-//         //  Loop through issues and check exact summary
-//         for (JsonNode issue : issues) {
-//             String foundSummary = issue.get("fields").get("summary").asText().trim();
-//             String statusCategoryKey = issue.get("fields").get("status")
-//                                             .get("statusCategory").get("key").asText();
-
-//             System.out.println("Found ticket: [" + foundSummary + "], StatusCategory: " + statusCategoryKey);
-
-//             // Block creation if exact summary matches and ticket is active (not Done)
-//             if (foundSummary.equalsIgnoreCase(summary) && !statusCategoryKey.equalsIgnoreCase("done")) {
-//                 System.out.println("Active ticket exists → BLOCK creation");
-//                 return true;
-//             }
-//         }
-
-//         System.out.println("No active tickets found → safe to create");
-//         return false;
-
-//     } catch (Exception e) {
-//         e.printStackTrace();
-//     }
-
-//     return false;
-// }
-//-----------------
 public static boolean ticketExists(String summary) {
     try {
         System.out.println("\n========== CHECKING IF TICKET EXISTS ==========");
@@ -187,54 +84,6 @@ public static boolean ticketExists(String summary) {
 
     return false;
 }
-//     public static boolean ticketExists(String summary) {
-//     try {
-//         System.out.println("Inside Ticket Exist");
-
-//         // Proper JQL
-//         String jql = "project=" + PROJECT + " AND summary=\"" + summary + "\"";
-
-//         // Encode the JQL
-//         String url = JIRA_URL + "/rest/api/3/search?jql=" + URLEncoder.encode(jql, StandardCharsets.UTF_8);
-//         System.out.println("SEARCH URL: "+url);
-
-//         System.out.println("Searching Jira URL: " + url);
-
-//         // Add Accept header and Authorization
-//         String response = Request.get(url)
-//                 .addHeader("Authorization", auth())
-//                 .addHeader("Accept", "application/json")
-//                 .execute()
-//                 .returnContent()
-//                 .asString();
-
-//         System.out.println("Response from Jira search: " + response);
-
-//         ObjectMapper mapper = new ObjectMapper();
-//         JsonNode root = mapper.readTree(response);
-
-//         // Safety check
-//         if (root.has("total")) {
-//             int total = root.get("total").asInt();
-//             return total > 0;
-//         } else {
-//             System.out.println("No 'total' field found in search response.");
-//         }
-
-//     } catch (org.apache.hc.client5.http.HttpResponseException e) {
-//         // Special handling for Jira 410 Gone
-//         System.out.println("Jira search returned HTTP " + e.getStatusCode() + ": " + e.getReasonPhrase());
-//         if (e.getStatusCode() == 410) {
-//             System.out.println("API deprecated or endpoint not available. Skipping ticketExists check.");
-//             return false; // allow ticket creation
-//         }
-//         e.printStackTrace();
-//     } catch (Exception e) {
-//         e.printStackTrace();
-//     }
-
-//     return false;
-// }
  
     public static void createTicketIfNeeded(String summary,RiskAnalysis risk){
  
@@ -281,41 +130,7 @@ public static boolean ticketExists(String summary) {
  
     }
  
-    // public static void createTicket(String summary,String description){
  
-    //     try{
-
-    //         System.out.println("Ticket Creating");
- 
-    //        // String url=JIRA_URL+"/issue";
-    //        String url=JIRA_URL+"/rest/api/3/issue";
-
-    //         System.out.println("iNSIDE tICKET JIRA_URL = " + JIRA_URL);
-    //         System.out.println("iNSIDE tICKET JIRA_URL = " + url);
- 
-    //         String body=
-    //         "{"+
-    //         "\"fields\":{"+
-    //         "\"project\":{\"key\":\""+PROJECT+"\"},"+
-    //         "\"summary\":\""+summary+"\","+
-    //         "\"description\":\""+description+"\","+
-    //         "\"issuetype\":{\"name\":\"Task\"}"+
-    //         "}"+
-    //         "}";
- 
-    //         Request.post(url)
-    //         .addHeader("Authorization",auth())
-    //         .addHeader("Content-Type","application/json")
-    //         .bodyString(body,ContentType.APPLICATION_JSON)
-    //         .execute();
- 
-    //         System.out.println("Jira ticket created");
- 
-    //     }catch(Exception e){
-    //         e.printStackTrace();
-    //     }
- 
-    // }
  
     public static void createTicket(String summary, String description) {
     try {
