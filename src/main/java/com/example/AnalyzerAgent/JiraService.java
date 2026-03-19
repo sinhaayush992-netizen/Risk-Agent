@@ -132,24 +132,17 @@ public class JiraService {
 public static boolean ticketExists(String summary) {
     try {
         System.out.println("\n========== CHECKING IF TICKET EXISTS ==========");
-
         if (summary == null || summary.trim().isEmpty()) {
-            System.out.println("Summary is null or empty → safe to create");
+            System.out.println("Summary is empty → safe to create");
             return false;
         }
 
-        // Normalize only spaces, keep brackets
-        String normalizedSummary = summary.replaceAll("\\s+", " ").trim();
-
         System.out.println("Original summary: [" + summary + "]");
-        System.out.println("Normalized summary for Jira search: [" + normalizedSummary + "]");
 
-        // Fuzzy JQL search
-        String jql = "project=" + PROJECT + " AND summary ~ \"" + normalizedSummary + "\"";
+        // JQL: get all issues in project
+        String jql = "project=" + PROJECT;
         String encodedJql = URLEncoder.encode(jql, StandardCharsets.UTF_8);
-
-        String url = JIRA_URL + "/rest/api/3/search/jql?jql=" + encodedJql +
-                     "&maxResults=20&fields=summary,status";
+        String url = JIRA_URL + "/rest/api/3/search/jql?jql=" + encodedJql + "&maxResults=50&fields=summary,status";
 
         System.out.println("Jira search URL: " + url);
 
@@ -166,7 +159,7 @@ public static boolean ticketExists(String summary) {
         JsonNode issues = mapper.readTree(response).get("issues");
 
         if (issues == null || issues.size() == 0) {
-            System.out.println("No issues returned → safe to create");
+            System.out.println("No issues found → safe to create");
             return false;
         }
 
