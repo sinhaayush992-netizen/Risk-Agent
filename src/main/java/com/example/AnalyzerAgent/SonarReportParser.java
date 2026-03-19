@@ -73,6 +73,7 @@ public class SonarReportParser {
 
             if (risk == null) {
                 System.out.println("AI analysis failed. Using fallback risk.");
+                return;
                 // risk = new RiskAnalysis();
                 // risk.criticality = "High";
                 // risk.riskScore = 8.5;

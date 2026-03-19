@@ -218,6 +218,7 @@ public class SnykReporterParser {
 
         if (risk == null) {
             System.out.println("AI analysis failed. Using fallback risk.");
+            return;
         }
 
         // Step 5: Create single Jira ticket
