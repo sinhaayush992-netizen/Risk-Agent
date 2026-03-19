@@ -57,7 +57,79 @@ public class JiraService {
  
     //     return false;
     // }
-   public static boolean ticketExists(String summary) {
+    //duplicate card--
+//    public static boolean ticketExists(String summary) {
+//     try {
+//         System.out.println("\n========== CHECKING IF TICKET EXISTS ==========");
+
+//         if (summary == null || summary.trim().isEmpty()) {
+//             System.out.println("Summary is null or empty → safe to create");
+//             return false;
+//         }
+
+//         // Normalize summary for search
+//         String normalizedSummary = summary.replaceAll("\\[|\\]", "")  // remove [ and ]
+//                                          .replaceAll("\\s+", " ")    // collapse multiple spaces
+//                                          .trim();
+
+//         System.out.println("Original summary: [" + summary + "]");
+//         System.out.println("Normalized summary for Jira search: [" + normalizedSummary + "]");
+
+//         // Build fuzzy JQL search
+//         String jql = "project=" + PROJECT + " AND summary ~ \"" + normalizedSummary + "\"";
+//         String encodedJql = URLEncoder.encode(jql, StandardCharsets.UTF_8);
+
+//         String url = JIRA_URL + "/rest/api/3/search/jql?jql=" + encodedJql +
+//                      "&maxResults=20&fields=summary,status";
+
+//         System.out.println("Jira search URL: " + url);
+
+//         // Call Jira REST API
+//         String response = Request.get(url)
+//                 .addHeader("Authorization", auth())
+//                 .addHeader("Accept", "application/json")
+//                 .execute()
+//                 .returnContent()
+//                 .asString();
+
+//         System.out.println("RAW RESPONSE FROM JIRA: " + response);
+
+//         ObjectMapper mapper = new ObjectMapper();
+//         JsonNode issues = mapper.readTree(response).get("issues");
+
+//         if (issues == null || issues.size() == 0) {
+//             System.out.println("No issues returned → safe to create");
+//             return false;
+//         }
+
+//         System.out.println("Total issues returned: " + issues.size());
+
+//         //  Loop through issues and check exact summary
+//         for (JsonNode issue : issues) {
+//             String foundSummary = issue.get("fields").get("summary").asText().trim();
+//             String statusCategoryKey = issue.get("fields").get("status")
+//                                             .get("statusCategory").get("key").asText();
+
+//             System.out.println("Found ticket: [" + foundSummary + "], StatusCategory: " + statusCategoryKey);
+
+//             // Block creation if exact summary matches and ticket is active (not Done)
+//             if (foundSummary.equalsIgnoreCase(summary) && !statusCategoryKey.equalsIgnoreCase("done")) {
+//                 System.out.println("Active ticket exists → BLOCK creation");
+//                 return true;
+//             }
+//         }
+
+//         System.out.println("No active tickets found → safe to create");
+//         return false;
+
+//     } catch (Exception e) {
+//         e.printStackTrace();
+//     }
+
+//     return false;
+// }
+//-----------------
+public static boolean ticketExists(String summary) {
     try {
         System.out.println("\n========== CHECKING IF TICKET EXISTS ==========");
 
@@ -66,15 +138,13 @@ public class JiraService {
             return false;
         }
 
-        // Normalize summary for search
-        String normalizedSummary = summary.replaceAll("\\[|\\]", "")  // remove [ and ]
-                                         .replaceAll("\\s+", " ")    // collapse multiple spaces
-                                         .trim();
+        // Normalize only spaces, keep brackets
+        String normalizedSummary = summary.replaceAll("\\s+", " ").trim();
 
         System.out.println("Original summary: [" + summary + "]");
         System.out.println("Normalized summary for Jira search: [" + normalizedSummary + "]");
 
-        // Build fuzzy JQL search
+        // Fuzzy JQL search
         String jql = "project=" + PROJECT + " AND summary ~ \"" + normalizedSummary + "\"";
         String encodedJql = URLEncoder.encode(jql, StandardCharsets.UTF_8);
 
@@ -83,7 +153,6 @@ public class JiraService {
 
         System.out.println("Jira search URL: " + url);
 
-        // Call Jira REST API
         String response = Request.get(url)
                 .addHeader("Authorization", auth())
                 .addHeader("Accept", "application/json")
@@ -103,7 +172,6 @@ public class JiraService {
 
         System.out.println("Total issues returned: " + issues.size());
 
-        //  Loop through issues and check exact summary
         for (JsonNode issue : issues) {
             String foundSummary = issue.get("fields").get("summary").asText().trim();
             String statusCategoryKey = issue.get("fields").get("status")
@@ -111,7 +179,6 @@ public class JiraService {
 
             System.out.println("Found ticket: [" + foundSummary + "], StatusCategory: " + statusCategoryKey);
 
-            // Block creation if exact summary matches and ticket is active (not Done)
             if (foundSummary.equalsIgnoreCase(summary) && !statusCategoryKey.equalsIgnoreCase("done")) {
                 System.out.println("Active ticket exists → BLOCK creation");
                 return true;
