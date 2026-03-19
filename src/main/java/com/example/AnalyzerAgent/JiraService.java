@@ -61,16 +61,16 @@ public class JiraService {
     try {
         System.out.println("Inside Ticket Exist");
 
-        // Proper JQL
-        String jql = "project=" + PROJECT + " AND summary~\"" + summary + "\"";
+        String jql = "project=" + PROJECT +
+                     " AND summary~\"" + summary + "\"" +
+                     " AND statusCategory != Done";
 
-        // Encode the JQL
-        String url = JIRA_URL + "/rest/api/3/search?jql=" + URLEncoder.encode(jql, StandardCharsets.UTF_8);
-        System.out.println("SEARCH URL: "+url);
+        String url = JIRA_URL + "/rest/api/3/search/jql?jql=" +
+                     URLEncoder.encode(jql, StandardCharsets.UTF_8) +
+                     "&maxResults=1";
 
-        System.out.println("Searching Jira URL: " + url);
+        System.out.println("SEARCH URL: " + url);
 
-        // Add Accept header and Authorization
         String response = Request.get(url)
                 .addHeader("Authorization", auth())
                 .addHeader("Accept", "application/json")
@@ -78,33 +78,68 @@ public class JiraService {
                 .returnContent()
                 .asString();
 
-        System.out.println("Response from Jira search: " + response);
-
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root = mapper.readTree(response);
 
-        // Safety check
-        if (root.has("total")) {
-            int total = root.get("total").asInt();
-            return total > 0;
-        } else {
-            System.out.println("No 'total' field found in search response.");
-        }
+        JsonNode issues = root.get("issues");
 
-    } catch (org.apache.hc.client5.http.HttpResponseException e) {
-        // Special handling for Jira 410 Gone
-        System.out.println("Jira search returned HTTP " + e.getStatusCode() + ": " + e.getReasonPhrase());
-        if (e.getStatusCode() == 410) {
-            System.out.println("API deprecated or endpoint not available. Skipping ticketExists check.");
-            return false; // allow ticket creation
-        }
-        e.printStackTrace();
+        // If any issue found → duplicate (not done)
+        return issues != null && issues.size() > 0;
+
     } catch (Exception e) {
         e.printStackTrace();
     }
 
     return false;
 }
+//     public static boolean ticketExists(String summary) {
+//     try {
+//         System.out.println("Inside Ticket Exist");
+
+//         // Proper JQL
+//         String jql = "project=" + PROJECT + " AND summary=\"" + summary + "\"";
+
+//         // Encode the JQL
+//         String url = JIRA_URL + "/rest/api/3/search?jql=" + URLEncoder.encode(jql, StandardCharsets.UTF_8);
+//         System.out.println("SEARCH URL: "+url);
+
+//         System.out.println("Searching Jira URL: " + url);
+
+//         // Add Accept header and Authorization
+//         String response = Request.get(url)
+//                 .addHeader("Authorization", auth())
+//                 .addHeader("Accept", "application/json")
+//                 .execute()
+//                 .returnContent()
+//                 .asString();
+
+//         System.out.println("Response from Jira search: " + response);
+
+//         ObjectMapper mapper = new ObjectMapper();
+//         JsonNode root = mapper.readTree(response);
+
+//         // Safety check
+//         if (root.has("total")) {
+//             int total = root.get("total").asInt();
+//             return total > 0;
+//         } else {
+//             System.out.println("No 'total' field found in search response.");
+//         }
+
+//     } catch (org.apache.hc.client5.http.HttpResponseException e) {
+//         // Special handling for Jira 410 Gone
+//         System.out.println("Jira search returned HTTP " + e.getStatusCode() + ": " + e.getReasonPhrase());
+//         if (e.getStatusCode() == 410) {
+//             System.out.println("API deprecated or endpoint not available. Skipping ticketExists check.");
+//             return false; // allow ticket creation
+//         }
+//         e.printStackTrace();
+//     } catch (Exception e) {
+//         e.printStackTrace();
+//     }
+
+//     return false;
+// }
  
     public static void createTicketIfNeeded(String summary,RiskAnalysis risk){
  
