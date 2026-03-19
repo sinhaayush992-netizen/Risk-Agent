@@ -236,7 +236,7 @@ public class SnykReporterParser {
         description.append("Remediation: ").append(risk.remediation).append("\n");
 
         // Only one ticket
-       // JiraService.createTicketIfNeeded(summary, risk);
+        JiraService.createTicketIfNeeded(summary, risk);
 
     } catch (Exception e) {
         e.printStackTrace();

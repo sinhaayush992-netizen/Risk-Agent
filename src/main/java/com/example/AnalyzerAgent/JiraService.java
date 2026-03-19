@@ -216,11 +216,11 @@ public class JiraService {
                 + "}"
                 + "}";
 
-        Request.post(url)
-                .addHeader("Authorization", auth())
-                .addHeader("Content-Type", "application/json")
-                .bodyString(body, ContentType.APPLICATION_JSON)
-                .execute();
+        // Request.post(url)
+        //         .addHeader("Authorization", auth())
+        //         .addHeader("Content-Type", "application/json")
+        //         .bodyString(body, ContentType.APPLICATION_JSON)
+        //         .execute();
 
         System.out.println("Jira ticket created");
 
